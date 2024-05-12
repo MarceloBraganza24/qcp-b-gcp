@@ -16,4 +16,12 @@ export default class ShiftsDao {
         const shiftSaved = await shiftsModel.create(shift);
         return shiftSaved;
     }
+    update = async(id, shift) => {
+        const shiftUpdated = await shiftsModel.findByIdAndUpdate(id, shift);
+        return shiftUpdated;
+    }
+    eliminate = async(id) => {
+        const shiftSaved = await shiftsModel.findByIdAndDelete(id);
+        return shiftSaved;
+    }
 }

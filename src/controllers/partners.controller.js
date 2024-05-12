@@ -37,8 +37,33 @@ const register = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try {
+        const pid = req.params.pid;
+        const partner = req.body;
+        const partnerUpdated = await partnersService.update(pid, partner)
+        res.sendSuccess(partnerUpdated);
+    } catch (error) {
+        res.sendServerError(error.message);
+        req.logger.error(error.message);
+    }
+}
+
+const eliminate = async (req, res) => {
+    try {
+        const pid = req.params.pid;            
+        const partner = await partnersService.eliminate(pid);
+        res.sendSuccess(partner);
+    } catch (error) {
+        res.sendServerError(error.message);
+        req.logger.error(error.message);
+    }
+}
+
 export {
     getAll,
     getById,
-    register
+    register,
+    update,
+    eliminate
 }

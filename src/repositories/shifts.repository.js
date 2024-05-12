@@ -16,4 +16,12 @@ export default class ShiftsRepository {
         const shiftSaved = await this.dao.save(shift);
         return shiftSaved;
     }
+    update = async (id, shift) => {
+        const shiftUpdated = await this.dao.update(id, shift);
+        return shiftUpdated;
+    }
+    eliminate = async (id) => {
+        const shiftEliminated = await this.dao.eliminate(id);
+        return shiftEliminated;
+    }
 }

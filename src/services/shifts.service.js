@@ -22,8 +22,20 @@ const save = async (first_name, last_name, date, schedule) => {
     return shiftSaved;
 }
 
+const update = async (id, shift) => {
+    const shiftUpdated = await shiftsManager.update(id, shift);
+    return shiftUpdated;
+}
+
+const eliminate = async (id) => {
+    const shift = await shiftsManager.eliminate(id);
+    return shift;
+}
+
 export {
     getAll,
     getById,
-    save
+    save,
+    update,
+    eliminate
 }

@@ -34,8 +34,36 @@ const save = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try {
+        const sid = req.params.sid;
+        const shift = req.body;
+        const d = new Date(shift.date)
+        const dateString = d.toISOString().split('T')[0]
+        shift.date = dateString;
+        const shiftUpdated = await shiftsService.update(sid, shift)
+        res.sendSuccess(shiftUpdated);
+    } catch (error) {
+        res.sendServerError(error.message);
+        req.logger.error(error.message);
+    }
+}
+
+const eliminate = async (req, res) => {
+    try {
+        const sid = req.params.sid;            
+        const shift = await shiftsService.eliminate(sid);
+        res.sendSuccess(shift);
+    } catch (error) {
+        res.sendServerError(error.message);
+        req.logger.error(error.message);
+    }
+}
+
 export {
     getAll,
     getById,
-    save
+    save,
+    update,
+    eliminate
 }

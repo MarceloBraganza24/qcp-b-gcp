@@ -1,22 +1,20 @@
 import PartnersRepository from '../repositories/partners.repository.js';
-import { Partners } from '../dao/factory.js';
 import { PartnerAlreadyExists } from '../utils/custom.exceptions.js';
 import { htmlNewRegister } from '../utils/custom.html.js';
 import { sendEmail } from './mail.service.js';
 
-const partnersDao = new Partners();
-const partnersRepository = new PartnersRepository(partnersDao);
+const partnersManager = new PartnersRepository();
 
 const getAll = async () => {
-    const partners = await partnersRepository.getAll();
+    const partners = await partnersManager.getAll();
     return partners;
 }
 const getById = async (id) => {
-    const partner = await partnersRepository.getById(id);
+    const partner = await partnersManager.getById(id);
     return partner;
 }
 const register = async(partner) => {
-    const partnerByEmail = await partnersRepository.getByEmail(partner.email);
+    const partnerByEmail = await partnersManager.getByEmail(partner.email);
     if(partnerByEmail) {
         throw new PartnerAlreadyExists('partner already exists');
     }
@@ -26,12 +24,25 @@ const register = async(partner) => {
         html: htmlNewRegister
     }
     await sendEmail(emailNewRegister);
-    const result = await partnersRepository.save(partner);
+    partner.partner_datetime =  new Date().toLocaleString();
+    const result = await partnersManager.save(partner);
     return result;
+}
+
+const update = async (id, partner) => {
+    const partnerUpdated = await partnersManager.update(id, partner);
+    return partnerUpdated;
+}
+
+const eliminate = async (id) => {
+    const partner = await partnersManager.eliminate(id);
+    return partner;
 }
 
 export {
     getAll,
     getById,
-    register
+    register,
+    update,
+    eliminate
 }
