@@ -15,6 +15,8 @@ import TicketsRouter from "./routes/tickets.router.js";
 import ShiftsRouter from "./routes/shifts.router.js";
 import PaymentsRouter from "./routes/payments.router.js";
 import PartnersRouter from "./routes/partners.router.js";
+import ProvidersRouter from "./routes/providers.router.js";
+import ProductsRouter from "./routes/products.router.js";
 
 const app = express();
 
@@ -24,6 +26,8 @@ const ticketsRouter = new TicketsRouter();
 const shiftsRouter = new ShiftsRouter();
 const paymentsRouter = new PaymentsRouter();
 const partnersRouter = new PartnersRouter();
+const providersRouter = new ProvidersRouter();
+const productsRouter = new ProductsRouter();
 
 app.use(addLogger);
 app.use(express.json());
@@ -54,5 +58,7 @@ app.use('/api/tickets', ticketsRouter.getRouter());
 app.use('/api/shifts', shiftsRouter.getRouter());
 app.use('/api/payments', paymentsRouter.getRouter());
 app.use('/api/partners', partnersRouter.getRouter());
+app.use('/api/providers', providersRouter.getRouter());
+app.use('/api/products', productsRouter.getRouter());
 
 app.listen(config.port, () => console.log(`Server running on port ${config.port}`))
