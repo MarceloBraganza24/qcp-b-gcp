@@ -1,5 +1,5 @@
 import PartnersRepository from '../repositories/partners.repository.js';
-import { PartnerAlreadyExists } from '../utils/custom.exceptions.js';
+import { PartnerByDniByEmailExists, PartnerByDniExists, PartnerByEmailExists, PartnerExists } from '../utils/custom.exceptions.js';
 import { htmlNewRegister } from '../utils/custom.html.js';
 import { sendEmail } from './mail.service.js';
 
@@ -14,9 +14,18 @@ const getById = async (id) => {
     return partner;
 }
 const register = async(partner) => {
-    const partnerByEmail = await partnersManager.getByEmail(partner.email);
-    if(partnerByEmail) {
-        throw new PartnerAlreadyExists('partner already exists');
+    const partners = await partnersManager.getAll();
+    const partnerByDniByEmailExists = partners.find(item => item.dni === Number(partner.dni) && item.email === partner.email)
+    const partnerByDniExists = partners.find(item => item.dni === Number(partner.dni))
+    const partnerByEmailExists = partners.find(item => item.email === partner.email)
+    if(partnerByDniByEmailExists) {
+        throw new PartnerByDniByEmailExists('There is already a partner with that DNI and email');
+    }
+    if(partnerByDniExists) {
+        throw new PartnerByDniExists('There is already a partner with that DNI');
+    }
+    if(partnerByEmailExists) {
+        throw new PartnerByEmailExists('There is already a partner with that email');
     }
     const emailNewRegister = {
         to: partner.email,
@@ -30,8 +39,52 @@ const register = async(partner) => {
 }
 
 const update = async (id, partner) => {
+    const partners = await partnersManager.getAll();
+    const partnerById = await partnersManager.getById(id);
+ 
+    const partnerByDniByEmailExists = partners.find(item => item.dni === Number(partner.dni) && item.email === partner.email)
+    const partnerByDniExists = partners.find(item => item.dni === Number(partner.dni))
+    const partnerByEmailExists = partners.find(item => item.email === partner.email)
+
+
+    if(partnerById.first_name !== partner.first_name || partnerById.last_name !== partner.last_name && partnerById.dni === partner.dni || partnerById.phone !== partner.phone && partnerById.email === partner.email) {
+        const partnerUpdated = await partnersManager.update(id, partner);
+        return partnerUpdated;
+    }
+    if(partnerById.first_name === partner.first_name && partnerById.last_name === partner.last_name && partnerById.dni === partner.dni && partnerById.phone === partner.phone && partnerById.email === partner.email) {
+        throw new PartnerExists('There is already a partner with that data');
+    }
+    if(partnerByDniByEmailExists) {
+        throw new PartnerByDniByEmailExists('There is already a partner with that DNI and email');
+    }
+    if(partnerByDniExists && !partnerByEmailExists) {
+        throw new PartnerByDniExists('There is already a partner with that DNI');
+    }
+    if(partnerByEmailExists && !partnerByDniExists) {
+        throw new PartnerByEmailExists('There is already a partner with that email');
+    }
     const partnerUpdated = await partnersManager.update(id, partner);
     return partnerUpdated;
+    
+
+
+
+
+
+    //const partnerByDniByEmailExists = partners.find(item => item.dni === Number(partner.dni) && item.email === partner.email)
+
+    /* if(partnerById.first_name === partner.first_name && partnerById.last_name === partner.last_name && partnerById.dni === partner.dni && partnerById.phone === partner.phone && partnerById.email === partner.email) {
+        throw new PartnerExists('There is already a partner with that data');
+    }
+    if(partnerById.first_name !== partner.first_name || partnerById.last_name !== partner.last_name && partnerById.dni === partner.dni || partnerById.phone !== partner.phone && partnerById.email === partner.email) {
+        const partnerUpdated = await partnersManager.update(id, partner);
+        return partnerUpdated;
+    }
+    if(partnerByDniByEmailExists) {
+        throw new PartnerByDniByEmailExists('There is already a partner with that DNI and email');
+    } */
+    /* const partnerUpdated = await partnersManager.update(id, partner);
+    return partnerUpdated; */
 }
 
 const eliminate = async (id) => {

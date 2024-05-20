@@ -1,5 +1,5 @@
 import * as partnersService from '../services/partners.service.js';
-import { PartnerAlreadyExists } from "../utils/custom.exceptions.js";
+import { PartnerByDniByEmailExists, PartnerByDniExists, PartnerByEmailExists } from "../utils/custom.exceptions.js";
 
 const getAll = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ const register = async (req, res) => {
         const registeredPartner = await partnersService.register({ ...req.body });
         res.sendSuccessNewResourse(registeredPartner);
     } catch (error) {
-        if(error instanceof PartnerAlreadyExists) {
+        if(error instanceof PartnerByDniByEmailExists || error instanceof PartnerByDniExists || error instanceof PartnerByEmailExists) {
             return res.sendClientError(error.message);
         }
         res.sendServerError(error.message);

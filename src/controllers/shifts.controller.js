@@ -1,4 +1,5 @@
 import * as shiftsService from '../services/shifts.service.js';
+import { ShiftByDateByScheduleExists, ShiftExists } from "../utils/custom.exceptions.js";
 
 const getAll = async (req, res) => {
     try {
@@ -24,11 +25,14 @@ const getById = async (req, res) => {
 const save = async (req, res) => {
     try {
         const { first_name, last_name, date, schedule } = req.body;
-        const d = new Date(date)
-        const dateString = d.toISOString().split('T')[0]
-        const shift = await shiftsService.save(first_name, last_name, dateString, schedule);
+        let dateToChange = new Date(date);
+        const dateShift = dateToChange.toISOString().split('T')[0]
+        const shift = await shiftsService.save(first_name, last_name, dateShift, schedule);
         res.sendSuccessNewResourse(shift);
     } catch (error) {
+        if(error instanceof ShiftByDateByScheduleExists) {
+            return res.sendClientError(error.message);
+        }
         res.sendServerError(error.message);
         req.logger.error(error.message);
     }
@@ -38,12 +42,15 @@ const update = async (req, res) => {
     try {
         const sid = req.params.sid;
         const shift = req.body;
-        const d = new Date(shift.date)
-        const dateString = d.toISOString().split('T')[0]
-        shift.date = dateString;
+        let dateToChange = new Date(shift.date);
+        const dateShift = dateToChange.toISOString().split('T')[0]
+        shift.date = dateShift;
         const shiftUpdated = await shiftsService.update(sid, shift)
         res.sendSuccess(shiftUpdated);
     } catch (error) {
+        if(error instanceof ShiftByDateByScheduleExists || error instanceof ShiftExists ) {
+            return res.sendClientError(error.message);
+        }
         res.sendServerError(error.message);
         req.logger.error(error.message);
     }

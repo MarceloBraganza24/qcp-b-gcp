@@ -5,7 +5,42 @@ export class UserAlreadyExists extends Error {
     }
 }
 
-export class PartnerAlreadyExists extends Error {
+export class ShiftExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export class ShiftByDateByScheduleExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export class PartnerExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export class PartnerByDniByEmailExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export class PartnerByDniExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export class PartnerByEmailExists extends Error {
     constructor(message) {
         super(message);
         this.name = this.constructor.name;
