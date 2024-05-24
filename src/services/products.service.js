@@ -1,7 +1,5 @@
 import ProductsRepository from '../repositories/products.repository.js';
-import { ProductAlreadyExists } from '../utils/custom.exceptions.js';
-import { htmlNewRegister } from '../utils/custom.html.js';
-import { sendEmail } from './mail.service.js';
+import { ProductAlreadyExists, ProductByTitleExists } from '../utils/custom.exceptions.js';
 
 const productsManager = new ProductsRepository();
 
@@ -14,14 +12,30 @@ const getById = async (id) => {
     return product;
 }
 const register = async(product) => {
+    const products = await productsManager.getAll();
+    const productByTitleExists = products.find(item => item.title === product.title)
+    if(productByTitleExists) {
+        throw new ProductByTitleExists('There is already a product with that title');
+    }
     product.product_datetime =  new Date().toLocaleString();
     const result = await productsManager.save(product);
     return result;
 }
 
 const update = async (id, product) => {
-    const productUpdated = await productsManager.update(id, product);
-    return productUpdated;
+    const products = await productsManager.getAll();
+    const productById = await productsManager.getById(id);
+    const productByTitleExists = products.find(item => item.title === product.title)
+    if(productById.title === product.title && productById.description === product.description && productById.price === product.price && productById.stock === product.stock && productById.category === product.category) {
+        throw new ProductAlreadyExists('There is already a product with that data');
+    }
+    if(productById.title !== product.title || productById.description !== product.description || productById.price !== product.price || productById.stock !== product.stock || productById.category !== product.category) {
+        if(productByTitleExists.description !== product.description && productByTitleExists.price !== product.price && productByTitleExists.stock !== product.stock && productByTitleExists.category !== product.category) {
+            throw new ProductByTitleExists('There is already a product with that title');
+        }
+        const productUpdated = await productsManager.update(id, product);
+        return productUpdated;
+    }
 }
 
 const eliminate = async (id) => {

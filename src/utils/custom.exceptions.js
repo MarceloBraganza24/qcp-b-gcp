@@ -47,6 +47,13 @@ export class PartnerByEmailExists extends Error {
     }
 }
 
+export class ProviderExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
 export class ProviderByCuitCuilExists extends Error {
     constructor(message) {
         super(message);
@@ -62,6 +69,13 @@ export class ProviderByEmailExists extends Error {
 }
 
 export class ProductAlreadyExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export class ProductByTitleExists extends Error {
     constructor(message) {
         super(message);
         this.name = this.constructor.name;

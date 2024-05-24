@@ -1,5 +1,5 @@
 import * as productsService from '../services/products.service.js';
-import { ProductAlreadyExists } from "../utils/custom.exceptions.js";
+import { ProductAlreadyExists, ProductByTitleExists } from "../utils/custom.exceptions.js";
 
 const getAll = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ const register = async (req, res) => {
         const registeredProduct = await productsService.register({ ...req.body });
         res.sendSuccessNewResourse(registeredProduct);
     } catch (error) {
-        if(error instanceof ProductAlreadyExists) {
+        if(error instanceof ProductByTitleExists) {
             return res.sendClientError(error.message);
         }
         res.sendServerError(error.message);
@@ -44,6 +44,9 @@ const update = async (req, res) => {
         const productUpdated = await productsService.update(pid, product)
         res.sendSuccess(productUpdated);
     } catch (error) {
+        if(error instanceof ProductAlreadyExists || error instanceof ProductByTitleExists) {
+            return res.sendClientError(error.message);
+        }
         res.sendServerError(error.message);
         req.logger.error(error.message);
     }
