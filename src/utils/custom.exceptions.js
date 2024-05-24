@@ -47,7 +47,14 @@ export class PartnerByEmailExists extends Error {
     }
 }
 
-export class ProviderAlreadyExists extends Error {
+export class ProviderByCuitCuilExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export class ProviderByEmailExists extends Error {
     constructor(message) {
         super(message);
         this.name = this.constructor.name;
