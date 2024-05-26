@@ -29,11 +29,15 @@ const register = async (req, res) => {
         const registeredPartner = await partnersService.register({ ...req.body });
         res.sendSuccessNewResourse(registeredPartner);
     } catch (error) {
-        if(error instanceof PartnerByDniByEmailExists || error instanceof PartnerByDniExists || error instanceof PartnerByEmailExists) {
+        if(error instanceof PartnerByDniExists || error instanceof PartnerByEmailExists) {
             return res.sendClientError(error.message);
         }
-        res.sendServerError(error.message);
-        req.logger.error(error.message);
+        if (error.code === 11000) {
+            res.status(409).send({ message: 'Duplicate key error', field: 'email' });
+        } else {
+            res.sendServerError(error.message);
+            req.logger.error(error.message);
+        }
     }
 }
 
@@ -44,8 +48,15 @@ const update = async (req, res) => {
         const partnerUpdated = await partnersService.update(pid, partner)
         res.sendSuccess(partnerUpdated);
     } catch (error) {
-        res.sendServerError(error.message);
-        req.logger.error(error.message);
+        if(error instanceof PartnerByDniByEmailExists || error instanceof PartnerByDniExists || error instanceof PartnerByEmailExists) {
+            return res.sendClientError(error.message);
+        }
+        if (error.code === 11000) {
+            res.status(409).send({ message: 'Duplicate key error', field: 'email' });
+        } else {
+            res.sendServerError(error.message);
+            req.logger.error(error.message);
+        }
     }
 }
 

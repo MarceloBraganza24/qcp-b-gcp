@@ -61,6 +61,13 @@ export class ProviderByCuitCuilExists extends Error {
     }
 }
 
+export class ProviderByBusinessNameExists extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
 export class ProviderByEmailExists extends Error {
     constructor(message) {
         super(message);

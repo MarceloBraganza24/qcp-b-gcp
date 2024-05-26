@@ -43,16 +43,16 @@ const update = async (id, partner) => {
         throw new PartnerExists('There is already a partner with that data');
     }
     if(partnerById.first_name !== partner.first_name || partnerById.last_name !== partner.last_name || partnerById.dni !== partner.dni || partnerById.phone !== partner.phone || partnerById.email !== partner.email) {
-        if(partnerByDniExists && partnerByDniExists.first_name !== partner.first_name && partnerByDniExists.last_name !== partner.last_name && partnerByDniExists.phone !== partner.phone && partnerByDniExists.email !== partner.email) {
+        if(partnerByDniExists && (partnerByDniExists._id.toString() !== partnerById._id.toString())) {
             throw new PartnerByDniExists('There is already a partner with that DNI');
-        }
-        if(partnerByEmailExists && partnerByEmailExists.first_name !== partner.first_name && partnerByEmailExists.last_name !== partner.last_name && partnerByEmailExists.dni !== partner.dni && partnerByEmailExists.phone !== partner.phone) {
-            throw new PartnerByEmailExists('There is already a partner with that email');
-        }
+        }   
+        if(partnerByEmailExists && (partnerByEmailExists._id.toString() !== partnerById._id.toString())) {
+            throw new PartnerByDniExists('There is already a partner with that email');
+        }   
         const partnerUpdated = await partnersManager.update(id, partner);
         return partnerUpdated;
     }
-}
+}   
 
 const eliminate = async (id) => {
     const partner = await partnersManager.eliminate(id);

@@ -1,5 +1,5 @@
 import * as providersService from '../services/providers.service.js';
-import { ProviderByCuitCuilExists, ProviderByEmailExists } from "../utils/custom.exceptions.js";
+import { ProviderByCuitCuilExists, ProviderByEmailExists, ProviderByBusinessNameExists } from "../utils/custom.exceptions.js";
 
 const getAll = async (req, res) => {
     try {
@@ -29,11 +29,15 @@ const register = async (req, res) => {
         const registeredProvider = await providersService.register({ ...req.body });
         res.sendSuccessNewResourse(registeredProvider);
     } catch (error) {
-        if(error instanceof ProviderByCuitCuilExists || error instanceof ProviderByEmailExists) {
+        if(error instanceof ProviderByCuitCuilExists || error instanceof ProviderByEmailExists || error instanceof ProviderByBusinessNameExists) {
             return res.sendClientError(error.message);
         }
-        res.sendServerError(error.message);
-        req.logger.error(error.message);
+        if (error.code === 11000) {
+            res.status(409).send({ message: 'Duplicate key error', field: 'email' });
+        } else {
+            res.sendServerError(error.message);
+            req.logger.error(error.message);
+        }
     }
 }
 
@@ -44,11 +48,15 @@ const update = async (req, res) => {
         const providerUpdated = await providersService.update(pid, provider)
         res.sendSuccess(providerUpdated);
     } catch (error) {
-        if(error instanceof ProviderByCuitCuilExists || error instanceof ProviderByEmailExists) {
+        if(error instanceof ProviderByCuitCuilExists || error instanceof ProviderByEmailExists || error instanceof ProviderByBusinessNameExists) {
             return res.sendClientError(error.message);
         }
-        res.sendServerError(error.message);
-        req.logger.error(error.message);
+        if (error.code === 11000) {
+            res.status(409).send({ message: 'Duplicate key error', field: 'email' });
+        } else {
+            res.sendServerError(error.message);
+            req.logger.error(error.message);
+        }
     }
 }
 

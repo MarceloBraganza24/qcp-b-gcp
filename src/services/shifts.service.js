@@ -35,15 +35,13 @@ const update = async (id, shift) => {
     if(shiftOfBD.first_name === shift.first_name && shiftOfBD.last_name === shift.last_name && shiftOfBD.date === shift.date && shiftOfBD.schedule === shift.schedule) {
         throw new ShiftExists('There is already a shift with that data');
     }
-    if(shiftOfBD.first_name !== shift.first_name || shiftOfBD.last_name !== shift.last_name && shiftOfBD.date === shift.date && shiftOfBD.schedule === shift.schedule) {
+    if(shiftOfBD.first_name !== shift.first_name || shiftOfBD.last_name !== shift.last_name || shiftOfBD.date !== shift.date || shiftOfBD.schedule !== shift.schedule) {
+        if(shiftByDateByScheduleExists && (shiftByDateByScheduleExists._id.toString() !== shiftOfBD._id.toString())) {
+            throw new ShiftByDateByScheduleExists('There is already a shift with that date and time');
+        }
         const shiftUpdated = await shiftsManager.update(id, shift);
         return shiftUpdated;
     }
-    if(shiftByDateByScheduleExists) {
-        throw new ShiftByDateByScheduleExists('There is already a shift with that date and time');
-    }
-    const shiftUpdated = await shiftsManager.update(id, shift);
-    return shiftUpdated;
 }
 
 const eliminate = async (id) => {

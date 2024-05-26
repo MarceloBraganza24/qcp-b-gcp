@@ -30,7 +30,7 @@ const update = async (id, product) => {
         throw new ProductAlreadyExists('There is already a product with that data');
     }
     if(productById.title !== product.title || productById.description !== product.description || productById.price !== product.price || productById.stock !== product.stock || productById.category !== product.category) {
-        if(productByTitleExists.description !== product.description && productByTitleExists.price !== product.price && productByTitleExists.stock !== product.stock && productByTitleExists.category !== product.category) {
+        if(productByTitleExists && (productByTitleExists._id.toString() !== productById._id.toString())) {
             throw new ProductByTitleExists('There is already a product with that title');
         }
         const productUpdated = await productsManager.update(id, product);
