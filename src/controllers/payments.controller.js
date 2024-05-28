@@ -14,12 +14,12 @@ const createOrderShift = async (req, res) => {
                 }
             ],
             back_urls: {
-                success: "https://g9s2wrzd-5173.brs.devtunnels.ms/shifts",
-                failure: "https://g9s2wrzd-5173.brs.devtunnels.ms/shifts",
-                pending: "https://g9s2wrzd-5173.brs.devtunnels.ms/shifts"
+                success: "https://que-corte-peluquerias-frontend-mkxktyjzsa-rj.a.run.app/shifts",
+                failure: "https://que-corte-peluquerias-frontend-mkxktyjzsa-rj.a.run.app/shifts",
+                pending: "https://que-corte-peluquerias-frontend-mkxktyjzsa-rj.a.run.app/shifts"
             },
             auto_return: "approved",
-            notification_url: `https://g9s2wrzd-8081.brs.devtunnels.ms/api/payments/webhook-shift?first_name=${req.body.first_name}&last_name=${req.body.last_name}&date=${req.body.date}&schedule=${req.body.schedule}`
+            notification_url: `https://que-corte-peluquerias-backend-mkxktyjzsa-rj.a.run.app/api/payments/webhook-shift?first_name=${req.body.first_name}&last_name=${req.body.last_name}&date=${req.body.date}&schedule=${req.body.schedule}`
         }
         const preference = new Preference(client)
         const result = await preference.create({body});
@@ -44,12 +44,12 @@ const createOrderPartner = async (req, res) => {
                 }
             ],
             back_urls: {
-                success: "https://g9s2wrzd-5173.brs.devtunnels.ms/shifts",
-                failure: "https://g9s2wrzd-5173.brs.devtunnels.ms/shifts",
-                pending: "https://g9s2wrzd-5173.brs.devtunnels.ms/shifts"
+                success: "https://que-corte-peluquerias-frontend-mkxktyjzsa-rj.a.run.app/shifts",
+                failure: "https://que-corte-peluquerias-frontend-mkxktyjzsa-rj.a.run.app/shifts",
+                pending: "https://que-corte-peluquerias-frontend-mkxktyjzsa-rj.a.run.app/shifts"
             },
             auto_return: "approved",
-            notification_url: `https://g9s2wrzd-8081.brs.devtunnels.ms/api/payments/webhook-partner?first_name=${req.body.first_name}&last_name=${req.body.last_name}&dni=${req.body.dni}&phone=${req.body.phone}&email=${req.body.email}`
+            notification_url: `https://que-corte-peluquerias-backend-mkxktyjzsa-rj.a.run.app/api/payments/webhook-partner?first_name=${req.body.first_name}&last_name=${req.body.last_name}&dni=${req.body.dni}&phone=${req.body.phone}&email=${req.body.email}`
         }
         const preference = new Preference(client)
         const result = await preference.create({body});
@@ -101,7 +101,7 @@ const getWebhooksPartners = async (req, res) => {
                 phone: payment.phone,
                 email: payment.email,
             }
-            await fetch('https://g9s2wrzd-8081.brs.devtunnels.ms/api/partners/register', {
+            await fetch('https://que-corte-peluquerias-backend-mkxktyjzsa-rj.a.run.app/api/partners/register', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json'
